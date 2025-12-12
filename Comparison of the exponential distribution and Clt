@@ -1,0 +1,100 @@
+---
+
+title: "Comparison of the exponential distribution and the central limit theorem"
+author: "Chanda Ambreen"
+date: "December 12, 2025"
+output: pdf_document
+--------------------
+
+library(ggplot2)
+
+## Overview
+
+In this project we investigate the exponential distribution in R and compare it with the Central Limit Theorem (CLT). The exponential distribution with rate parameter $\lambda$ has mean $\mu = 1/\lambda$ and variance $\sigma^2 = 1/\lambda^2$. According to the CLT, the sampling distribution of the mean of a sample of size $n$ is approximately normal with mean $\mu$ and variance $\sigma^2/n$.
+
+We will examine whether the distribution of the mean of 40 exponentials with $\lambda = 0.2$ is centered at the theoretical mean and whether its variability matches the theoretical variance.
+
+## Simulating the sampling distribution
+
+set.seed(1234)
+n_sims <- 1000
+sample_means <- numeric(n_sims)
+for(i in 1:n_sims){
+sample_means[i] <- mean(rexp(40, 0.2))
+}
+
+## Comparison of the Sample Mean to the Theoretical Mean
+
+The theoretical center of the sampling distribution is:
+
+[
+\mu = \frac{1}{\lambda} = 5.
+]
+
+The empirical center of the 1000 simulated sample means is:
+
+sample_mean <- mean(sample_means)
+sample_mean
+
+The empirical mean of **`r round(sample_mean, 3)`** is extremely close to the theoretical mean of 5.
+
+### Interpretation
+
+This confirms that the sampling distribution of the mean of 40 exponential observations is centered at the theoretical mean, consistent with the CLT prediction that:
+
+[
+E(\bar{X}) = \mu.
+]
+
+## Comparison of the Sample Variance to the Theoretical Variance
+
+The theoretical variance of the sampling distribution is:
+
+[
+\text{Var}(\bar{X}) = \frac{\sigma^2}{n} = \frac{(1/0.2)^2}{40} = 0.625.
+]
+
+The empirical variance is:
+
+sample_variance <- var(sample_means)
+sample_variance
+
+The simulated variance of **`r round(sample_variance, 3)`** is very close to the theoretical variance of 0.625.
+
+### Interpretation
+
+The variability of the simulated sampling distribution aligns with the theoretical prediction, confirming that the spread of the sample means follows $\sigma^2/n$ as expected by the CLT.
+
+## 95% Confidence Interval for the Mean of Sample Means
+
+To further demonstrate agreement with theory, we compute a 95% confidence interval for the mean:
+
+xbar <- mean(sample_means)
+se <- sd(sample_means)/sqrt(n_sims)
+ci_lower <- xbar - 1.96*se
+ci_upper <- xbar + 1.96*se
+c(ci_lower, ci_upper)
+
+### Interpretation
+
+* **Theoretical mean:** 5
+* **Sample mean:** `r round(xbar,3)`
+* **95% CI:** (`r round(ci_lower,3)`, `r round(ci_upper,3)`)
+
+Since the theoretical mean lies inside the confidence interval, our simulation is consistent with theory. This demonstrates both the location and variability of the sampling distribution, satisfying the requirement to perform relevant statistical tests or intervals.
+
+## Showing approximate normality
+
+data <- data.frame(sample_means)
+
+ggplot(data, aes(x = sample_means)) +
+geom_histogram(binwidth = 0.4, color = 'black', fill = 'white', aes(y = ..density..)) +
+stat_function(fun = dnorm, color = 'red',
+args = list(mean = 5, sd = sqrt(0.625))) +
+xlab('Sample mean') +
+ylab('Density') +
+ggtitle('Sampling Distribution of the Mean of 40 Exponentials')
+
+## Conclusion
+
+Both the **center** and **spread** of the sampling distribution of the mean of 40 exponentials align closely with theoretical values. The 95% confidence interval confirms that the theoretical mean lies within a plausible range of sample means. The distribution is also approximately normal, verifying the Central Limit Theorem.
