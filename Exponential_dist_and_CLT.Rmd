@@ -57,7 +57,9 @@ According to the CLT we would expect that the variance of the sample of the 1000
 
 ```{r}
 
-var(exp_sample_means)
+sample_variance <- var(exp_sample_means)
+round(sample_variance, 3)
+
 
 ```
 
