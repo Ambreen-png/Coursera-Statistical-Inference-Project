@@ -37,11 +37,14 @@ We will check if this is the case.
 
 set.seed(1234)
 
-exp_sample_means <- NULL
-for(i in 1:1000) {
-  exp_sample_means <- c(exp_sample_means, mean(rexp(40, 0.2)))
+exp_sample_means <- numeric(1000)
+for(i in 1:1000){
+exp_sample_means[i] <- mean(rexp(40, 0.2))
 }
-mean(exp_sample_means)
+
+sample_mean <- mean(exp_sample_means)
+round(sample_mean, 3)
+
 
 ```
 
